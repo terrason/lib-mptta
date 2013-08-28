@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.terramagnet.mptta;
+package org.terramagnet.mptta.operation;
 
+import org.terramagnet.mptta.operation.DragAndDrop;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -65,7 +66,7 @@ public class DragAndDropTest {
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-            DragAndDrop instance = new DragAndDrop(connection, new SqlReader().read("drag_drop"));
+            DragAndDrop instance = new DragAndDrop();
             instance.execute(drapId, dropId, type);
             connection.commit();
         } catch (Exception ex) {

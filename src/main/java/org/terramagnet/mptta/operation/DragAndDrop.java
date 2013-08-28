@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.terramagnet.mptta;
+package org.terramagnet.mptta.operation;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -10,22 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DragAndDrop {
+public class DragAndDrop extends AbstractDatabaseOperation {
 
-    private static final int DRAG_LID = 0;
-    private static final int DRAG_RID = 1;
-    private static final int DROP_LID = 2;
-    private static final int DROP_RID = 3;
-    private static final int PRE_LID = 4;
-    private static final int PRE_RID = 5;
-    private static final int NEXT_LID = 6;
-    private static final int NEXT_RID = 7;
-    private Connection connection;
-    private String[] sql;
-
-    public DragAndDrop(Connection connection, String[] sql) {
-        this.connection = connection;
-        this.sql = sql;
+    @Override
+    protected String getName() {
+        return "drag_drop";
     }
 
     /**
@@ -43,7 +32,7 @@ public class DragAndDrop {
      *
      */
     public void execute(Serializable drapId, Serializable dropId, int type) throws SQLException {
-        int[] x = selectBasicData(drapId, dropId, connection);
+        int[] x = selectOperationPoints(drapId, dropId, getConnection());
         if (x == null) {
             throw new IllegalArgumentException();
         }
@@ -91,13 +80,47 @@ public class DragAndDrop {
                 shiftMax = x[DROP_RID] - 1;
             }
         }
-        move(shift, shiftMin, shiftMax, push, pushMin, pushMax, connection);
+        move(shift, shiftMin, shiftMax, push, pushMin, pushMax, getConnection());
     }
 
-    private int[] selectBasicData(Object drapId, Object dropId, Connection connection) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement(sql[0]);
-        ps.setObject(1, drapId);
-        ps.setObject(2, dropId);
+    private void move(int shift, int shiftMin, int shiftMax, int push, int pushMin, int pushMax, Connection connection) throws SQLException {
+        String[] sqls = getSql();
+        PreparedStatement ps = connection.prepareStatement(sqls[1]);
+        ps.setInt(1, shift);
+        ps.setInt(2, shiftMin);
+        ps.setInt(3, shiftMax);
+        ps.executeUpdate();
+        ps.close();
+        ps = connection.prepareStatement(sqls[2]);
+        ps.setInt(1, shift);
+        ps.setInt(2, shiftMin);
+        ps.setInt(3, shiftMax);
+        ps.executeUpdate();
+        ps.close();
+        ps = connection.prepareStatement(sqls[3]);
+        ps.setInt(1, push);
+        ps.setInt(2, pushMin);
+        ps.setInt(3, pushMax);
+        ps.executeUpdate();
+        ps.close();
+        ps = connection.prepareStatement(sqls[4]);
+        ps.setInt(1, push);
+        ps.setInt(2, pushMin);
+        ps.setInt(3, pushMax);
+        ps.executeUpdate();
+        ps.close();
+        ps = connection.prepareStatement(sqls[5]);
+        ps.executeUpdate();
+        ps.close();
+        ps = connection.prepareStatement(sqls[6]);
+        ps.executeUpdate();
+        ps.close();
+    }
+
+    private int[] selectOperationPoints(Object nodeId, Object targetNodeId, Connection connection) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(getSql()[0]);
+        ps.setObject(1, nodeId == null ? -1 : nodeId);
+        ps.setObject(2, targetNodeId);
         ResultSet rs = ps.executeQuery();
         int[] r = null;
         if (rs.next()) {
@@ -109,39 +132,5 @@ public class DragAndDrop {
         rs.close();
         ps.close();
         return r;
-    }
-
-    private void move(int shift, int shiftMin, int shiftMax, int push, int pushMin, int pushMax, Connection connection) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement(sql[1]);
-        ps.setInt(1, shift);
-        ps.setInt(2, shiftMin);
-        ps.setInt(3, shiftMax);
-        ps.executeUpdate();
-        ps.close();
-        ps = connection.prepareStatement(sql[2]);
-        ps.setInt(1, shift);
-        ps.setInt(2, shiftMin);
-        ps.setInt(3, shiftMax);
-        ps.executeUpdate();
-        ps.close();
-        ps = connection.prepareStatement(sql[3]);
-        ps.setInt(1, push);
-        ps.setInt(2, pushMin);
-        ps.setInt(3, pushMax);
-        ps.executeUpdate();
-        ps.close();
-        ps = connection.prepareStatement(sql[4]);
-        ps.setInt(1, push);
-        ps.setInt(2, pushMin);
-        ps.setInt(3, pushMax);
-        ps.executeUpdate();
-        ps.close();
-
-        ps = connection.prepareStatement(sql[5]);
-        ps.executeUpdate();
-        ps.close();
-        ps = connection.prepareStatement(sql[6]);
-        ps.executeUpdate();
-        ps.close();
     }
 }
