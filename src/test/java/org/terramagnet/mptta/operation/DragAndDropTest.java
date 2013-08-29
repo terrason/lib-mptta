@@ -59,14 +59,15 @@ public class DragAndDropTest {
     @Test
     public void testExecute() throws Exception {
         System.out.println("execute");
-        Serializable drapId = 1000063;
-        Serializable dropId = 1000011;
+        Serializable drapId = 1000061;
+        Serializable dropId = 3;
         int type = 0;
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
             DragAndDrop instance = new DragAndDrop();
+            instance.setConnection(connection);
             instance.execute(drapId, dropId, type);
             connection.commit();
         } catch (Exception ex) {
