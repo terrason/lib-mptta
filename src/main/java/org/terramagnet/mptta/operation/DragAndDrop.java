@@ -36,7 +36,7 @@ public class DragAndDrop extends AbstractDatabaseOperation {
         if (x == null) {
             throw new IllegalArgumentException();
         }
-        int sign = x[DRAG_LID] - x[DROP_LID];
+        int sign = x[DRAG_RID] - x[DROP_RID];
         if (sign == 0) {
             return;
         }

@@ -60,7 +60,7 @@ public class DragAndDropTest {
     public void testExecute() throws Exception {
         System.out.println("execute");
         Serializable drapId = 1000061;
-        Serializable dropId = 3;
+        Serializable dropId = 1000059;
         int type = 0;
         Connection connection = null;
         try {
