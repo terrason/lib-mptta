@@ -8,7 +8,7 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.Serializable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -17,15 +17,17 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.terramagnet.mptta.utilities.SqlReader;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author lipei
  */
-public class DragAndDropTest {
+public class RebuildTest {
 
-    public DragAndDropTest() {
+    private DataSource dataSource;
+
+    public RebuildTest() {
     }
 
     @BeforeClass
@@ -35,7 +37,6 @@ public class DragAndDropTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    private DataSource dataSource;
 
     @Before
     public void setUp() throws Exception {
@@ -53,21 +54,18 @@ public class DragAndDropTest {
     }
 
     /**
-     * Test of execute method, of class DragAndDrop.
+     * Test of execute method, of class Rebuild.
      */
     @Test
     public void testExecute() throws Exception {
         System.out.println("execute");
-        Serializable drapId = 1000061;
-        Serializable dropId = 1000059;
-        int type = 0;
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-            DragAndDrop instance = new DragAndDrop();
+            Rebuild instance = new Rebuild();
             instance.setConnection(connection);
-            instance.execute(drapId, dropId, type);
+            instance.execute();
             connection.commit();
         } catch (Exception ex) {
             if (connection != null) {
@@ -80,4 +78,5 @@ public class DragAndDropTest {
             }
         }
     }
+
 }
