@@ -56,7 +56,7 @@ public class RebuildTest {
     /**
      * Test of execute method, of class Rebuild.
      */
-    @Test
+//    @Test
     public void testExecute() throws Exception {
         System.out.println("execute");
         Connection connection = null;

@@ -55,7 +55,7 @@ public class DragAndDropTest {
     /**
      * Test of execute method, of class DragAndDrop.
      */
-    @Test
+//    @Test
     public void testExecute() throws Exception {
         System.out.println("execute");
         Serializable drapId = 1000061;
